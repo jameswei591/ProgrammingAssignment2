@@ -2,13 +2,13 @@
 
 makeCacheMatrix <- function(x = matrix()) {
         m <- NULL
-        set <- function(y) {
+        set <- function(y) {  ## initialize a matrix and its inverse
                 x <<- y
                 m <<- NULL
         }
-        get <- function() x
-        setinverse <- function(inverse) m <<- inverse
-        getinverse <- function() m
+        get <- function() x   ## return the matrix
+        setinverse <- function(inverse) m <<- inverse   ## assign parameter "m" with the inverse of the matrix
+        getinverse <- function() m    ## return the inverse of matrix
         list(set = set, get = get,
              setinverse = setinverse,
              getinverse = getinverse)
@@ -20,20 +20,21 @@ makeCacheMatrix <- function(x = matrix()) {
 ## calculated (and the matrix has not changed), then cacheSolve should retrieve the inverse from the cache.
 ## Return a matrix that is the inverse of 'x'
 cacheSolve <- function(x, ...) {
-        m <- x$getinverse()
-        if(!is.null(m)) {
+        m <- x$getinverse()      
+        if(!is.null(m)) {       ## check whether the inverse of a matrix is cached, return its inverse if cached
                 message("getting cached data")
                 return(m)
         }
-        data <- x$get()
+        data <- x$get()        ## calculate the inverse of matrix and cache it
         m <- solve(data, ...)
         x$setinverse(m)
         m
 }
 
 ## an example
-x <- matrix(runif(9), ncol=3) 
-y<-makeCacheMatrix(x)
+set.seed(1)   ## set up the random number seed 
+x <- matrix(runif(9), ncol=3)  ## generate a 3 by 3 matrix with elements of uniformly distributed random numbers in [0,1]
+y<-makeCacheMatrix(x)   ## test the above code
 y$get()
 y$getinverse()
 cacheSolve(y)
